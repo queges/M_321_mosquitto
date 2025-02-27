@@ -1,0 +1,11 @@
+version: '3'
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"   # MQTT Port
+      - "9001:9001"   # WebSockets (falls aktiviert)
+    volumes:
+      - /home/goat/Desktop/mosquitto/mosquitto.conf
