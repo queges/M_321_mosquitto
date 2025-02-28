@@ -109,6 +109,17 @@ chmod +x sensor.sh
 ./sensor.sh sensor2 &
 ```
 
-## 5. Fazit
+## 5. Virtualisierung
+
+### 5.1 Connection Settings
+![img](imgs/ConnectionSettings.png)
+
+### 5.2 Dashboard
+![img](imgs/grafanaDashboard.png)
+
+
+## 6. Fazit
 Diese Dokumentation beschreibt den Aufbau eines MQTT-Systems mit Docker und die Simulation von Sensoren. Durch die Automatisierung mit Bash-Skripten wird die Verwaltung mehrerer Sensoren erleichtert. Dies bildet die Grundlage für erweiterte IoT-Anwendungen.
 ```
+
+
