@@ -7,4 +7,4 @@ services:
       - "1883:1883"   # MQTT Port
       - "9001:9001"   # WebSockets (falls aktiviert)
     volumes:
-      - ./mosquitto.conf:/bin/data
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
