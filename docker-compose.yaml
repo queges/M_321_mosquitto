@@ -1,4 +1,3 @@
-version: '3'
 services:
   mosquitto:
     image: eclipse-mosquitto
@@ -8,4 +7,4 @@ services:
       - "1883:1883"   # MQTT Port
       - "9001:9001"   # WebSockets (falls aktiviert)
     volumes:
-      - /home/goat/Desktop/mosquitto/mosquitto.conf
+      - ./mosquitto.conf:/bin/data
