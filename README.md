@@ -147,7 +147,7 @@ mvn archetype:generate -DartifactId=MavenDemo -DgroupId=ch.wiss.m321 -Darchetype
 Nach dem Ausführen dieses Befehls wird das Projektverzeichnis `MavenDemo` mit einer Standardprojektstruktur generiert.
 
 ## 3. Implementierung des MQTT-Publishers
-Der Code für den MQTT-Publisher befindet sich in der Datei [`App.java`](src/main/java/ch/wiss/m321/App.java).
+Der Code für den MQTT-Publisher befindet sich in der Datei [`App.java`](MavenDemo/src/main/java/ch/wiss/m321/App.java).
 
 ## 4. Kompilieren und Ausführen
 ### 4.1 Projekt bauen
