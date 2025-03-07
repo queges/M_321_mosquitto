@@ -1,3 +1,8 @@
+# Inhaltsverzeichnis
+
+- [MQTT-System mit Dummy-Sensoren](#mqtt-system-mit-dummy-sensoren)  
+- [MQTT Publisher mit Java und Maven](#mqtt-publisher-mit-java-und-maven)  
+
 # MQTT-System mit Dummy-Sensoren
 
 ## 1. Einleitung
@@ -120,3 +125,70 @@ chmod +x sensor.sh
 
 ## 6. Fazit
 Diese Dokumentation beschreibt den Aufbau eines MQTT-Systems mit Docker und die Simulation von Sensoren. Durch die Automatisierung mit Bash-Skripten wird die Verwaltung mehrerer Sensoren erleichtert. Dies bildet die Grundlage für erweiterte IoT-Anwendungen.
+
+# MQTT Publisher mit Java und Maven
+
+## 1. Einführung
+Dieses Projekt implementiert einen MQTT-Publisher in Java, der periodisch Werte an ein spezifiziertes Topic sendet. Die Werte werden mit der **sinusförmigen Funktion** generiert.
+
+## 2. Projekt-Erstellung mit Maven
+Das Projekt wird mit **Maven** erstellt. Dazu wird folgender Befehl verwendet:
+
+```bash
+mvn archetype:generate -DartifactId=MavenDemo -DgroupId=ch.wiss.m321 -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.5
+```
+
+### Erklärung der Parameter:
+- `-DartifactId=MavenDemo` → Der Name des generierten Projekts
+- `-DgroupId=ch.wiss.m321` → Die Gruppierung des Pakets (z. B. Unternehmens- oder Schul-ID)
+- `-DarchetypeArtifactId=maven-archetype-quickstart` → Verwendet die Quickstart-Archetype für ein einfaches Java-Projekt
+- `-DarchetypeVersion=1.5` → Definiert die Archetype-Version
+
+Nach dem Ausführen dieses Befehls wird das Projektverzeichnis `MavenDemo` mit einer Standardprojektstruktur generiert.
+
+## 3. Implementierung des MQTT-Publishers
+Der Code für den MQTT-Publisher befindet sich in der Datei [`App.java`](src/main/java/ch/wiss/m321/App.java).
+
+## 4. Kompilieren und Ausführen
+### 4.1 Projekt bauen
+Das Projekt kann mit **Maven** kompiliert werden:
+
+```bash
+mvn clean package
+```
+
+Nach der erfolgreichen Kompilierung befindet sich die ausführbare `.jar`-Datei im `target`-Ordner.
+
+### 4.2 Programm ausführen
+Das Programm erwartet beim Start ein MQTT-Topic als Argument:
+
+```bash
+java -jar target/MavenDemo-1.0-SNAPSHOT.jar Demo
+```
+
+Hierbei wird das Topic `Demo` verwendet.
+
+## 5. Testen mit MQTT-Tools
+### 5.1 Abonnieren eines Topics
+In einem separaten Terminal kann ein **Subscriber** gestartet werden, um die gesendeten Werte zu empfangen:
+
+```bash
+mosquitto_sub -t Demo
+```
+
+### 5.2 Erwartetes Ergebnis
+Alle **500 Millisekunden** wird ein neuer Wert (basierend auf der Sinusfunktion) ausgegeben.
+
+## 6. Grafana
+### 6.1 Monitoring
+![img](imgs/Monitoring.png)
+
+
+### 6.2 Grafana Settings
+![img](imgs/GrafanaSettings.png)
+
+
+## 7. Fazit
+- Das Projekt demonstriert die Verwendung von **Java** und **MQTT** mit **Maven**.
+- Es sendet kontinuierlich **Sinuswerte** an ein spezifiziertes MQTT-Topic.
+- Die Implementierung kann leicht erweitert werden, z. B. um mehrere Sensoren oder eine stabilere Client-Verbindung.
