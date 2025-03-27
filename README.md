@@ -2,7 +2,7 @@
 
 - [MQTT-System mit Dummy-Sensoren](#mqtt-system-mit-dummy-sensoren)  
 - [MQTT Publisher mit Java und Maven](#mqtt-publisher-mit-java-und-maven)  
-- [MQTT-System Migration in Docker Compose](#MQTT-System Migration in Docker Compose)__
+- [MQTT-System Migration in Docker Compose](#mqtt-system migration in docker compose)__
 
 # MQTT-System mit Dummy-Sensoren
 
