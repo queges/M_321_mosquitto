@@ -2,6 +2,7 @@
 
 - [MQTT-System mit Dummy-Sensoren](#mqtt-system-mit-dummy-sensoren)  
 - [MQTT Publisher mit Java und Maven](#mqtt-publisher-mit-java-und-maven)  
+- [📦 MQTT-System Migration in Docker Compose](#📦 MQTT-System Migration in Docker Compose)__
 
 # MQTT-System mit Dummy-Sensoren
 
@@ -192,3 +193,155 @@ Alle **500 Millisekunden** wird ein neuer Wert (basierend auf der Sinusfunktion)
 - Das Projekt demonstriert die Verwendung von **Java** und **MQTT** mit **Maven**.
 - Es sendet kontinuierlich **Sinuswerte** an ein spezifiziertes MQTT-Topic.
 - Die Implementierung kann leicht erweitert werden, z. B. um mehrere Sensoren oder eine stabilere Client-Verbindung.
+
+
+
+# 📦 MQTT-System Migration in Docker Compose
+
+**Autoren:** Armin Vehapi & Glenn Spirig  
+**Datum:** 27.03.2025  
+**Projekt:** Sidequest SQ5 A/C – Migration von MQTT-Komponenten in eine Docker-Umgebung
+
+---
+
+## ✅ Projektziel
+
+Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Java) und Sensor (Shell-Skript) in eine verteilte Docker-Compose-Umgebung mit Persistenz und Sicherheitsmaßnahmen.
+
+---
+
+## 🗂️ Projektstruktur
+
+```
+.
+├── docker-compose.yaml
+├── mosquitto.conf
+├── sensor.sh
+└── MavenDemo
+    ├── Dockerfile
+    ├── pom.xml
+    └── src/
+```
+
+---
+
+## ⚙️ Verwendete Technologien
+
+- Docker & Docker Compose
+- Eclipse Mosquitto (MQTT-Broker)
+- Java MQTT Publisher (Maven)
+- Bash-basiertes Sensor-Skript
+
+---
+
+## 🧱 Docker-Compose Konfiguration
+
+```yaml
+version: '3.8'
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./sensor.sh:/sensor.sh
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  publisher:
+    build:
+      context: ./MavenDemo
+    container_name: mqtt-publisher
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
+```
+
+---
+
+## 📝 Dockerfile (Publisher)
+
+```Dockerfile
+FROM maven:3.8.4-openjdk-17 AS build
+WORKDIR /app
+COPY . .
+RUN mvn clean package
+
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/Mosquitto-1.0-SIGMA.jar app.jar
+CMD ["java", "-jar", "app.jar"]
+```
+
+---
+
+## 📡 Sensor Skript
+
+```bash
+#!/bin/bash
+while true
+do
+  mosquitto_pub -h mosquitto -t sensor/temperature -m "Temp: $RANDOM"
+  sleep 5
+done
+```
+
+---
+
+## ✅ Testplan
+
+| Test-ID | Testziel                            | Vorgehen                         | Erwartetes Ergebnis               |
+|---------|-------------------------------------|----------------------------------|-----------------------------------|
+| T1      | Mosquitto startet korrekt           | `docker-compose up -d`          | Container „mosquitto“ läuft       |
+| T2      | Publisher sendet MQTT-Nachricht     | `docker logs mqtt-publisher`    | Nachricht im Log sichtbar         |
+| T3      | Sensor-Skript sendet Daten          | `docker exec mosquitto ...`     | Nachrichten werden gesendet       |
+| T4      | Persistenz funktioniert             | Neustart & Daten prüfen         | Daten bleiben erhalten            |
+| T5      | Netzwerkverbindung aller Container  | `docker network inspect`        | Services sind verbunden           |
+
+---
+
+## 📊 Testprotokoll
+
+| Test-ID | Ergebnis                           | Status | Bemerkung                        |
+|---------|------------------------------------|--------|----------------------------------|
+| T1      | Mosquitto läuft mit richtigen Ports| OK     | Keine Fehler                     |
+| T2      | Publisher sendet korrekt           | OK     | Verbindung stabil                |
+| T3      | Sensor sendet Nachrichten          | OK     | Ausgabe korrekt im Topic         |
+| T4      | Volume persistiert Daten           | OK     | Daten bleiben auch nach Restart  |
+| T5      | Services im selben Netzwerk        | OK     | Kommunikation funktioniert       |
+
+---
+
+## 🔐 Sicherheitsmaßnahmen
+
+- Offizielle Images verwendet
+- Nur notwendige Ports (1883, 9001) freigegeben
+- Volumes statt Bind-Mounts für bessere Kontrolle
+- Grundlage für User-Isolation vorbereitet
+- Ressourcenbegrenzung möglich (`mem_limit`, `cpus`)
+
+---
+
+## 🔄 Migrationsvergleich
+
+| Kriterium       | Ohne Container (manuell)   | Mit Docker Compose              |
+|-----------------|----------------------------|---------------------------------|
+| Einrichtung     | Komplex, viele Tools nötig | Automatisiert mit 1 Befehl     |
+| Wartung         | Aufwendig                  | Sehr einfach via Compose        |
+| Portabilität    | Schlechter                 | Plattformunabhängig             |
+| Skalierbarkeit  | Kaum möglich               | Horizontal skalierbar           |
+
+---
+
+## 📌 Fazit
+
+Dieses Projekt zeigt, wie eine klassische MQTT-Anwendung mithilfe von Docker Compose in ein verteiltes, persistentes und sicheres System überführt werden kann. Alle Anforderungen des Sidequests SQ5 A/C wurden erfüllt.

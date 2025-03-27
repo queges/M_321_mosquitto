@@ -3,7 +3,6 @@ services:
   mosquitto:
     image: eclipse-mosquitto
     container_name: mosquitto
-    restart: unless-stopped
     ports:
       - "1883:1883"   # MQTT Port
       - "9001:9001"   # WebSockets (falls aktiviert)
@@ -17,4 +16,3 @@ services:
     container_name: mqtt-publisher
     depends_on:
       - mosquitto
-    restart: unless-stopped
