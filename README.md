@@ -2,7 +2,7 @@
 
 - [MQTT-System mit Dummy-Sensoren](#mqtt-system-mit-dummy-sensoren)  
 - [MQTT Publisher mit Java und Maven](#mqtt-publisher-mit-java-und-maven)  
-- [📦 MQTT-System Migration in Docker Compose](#📦 MQTT-System Migration in Docker Compose)__
+- [MQTT-System Migration in Docker Compose](#MQTT-System Migration in Docker Compose)__
 
 # MQTT-System mit Dummy-Sensoren
 
@@ -196,7 +196,7 @@ Alle **500 Millisekunden** wird ein neuer Wert (basierend auf der Sinusfunktion)
 
 
 
-# 📦 MQTT-System Migration in Docker Compose
+# MQTT-System Migration in Docker Compose
 
 **Autoren:** Armin Vehapi & Glenn Spirig  
 **Datum:** 27.03.2025  
@@ -204,13 +204,13 @@ Alle **500 Millisekunden** wird ein neuer Wert (basierend auf der Sinusfunktion)
 
 ---
 
-## ✅ Projektziel
+## Projektziel
 
 Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Java) und Sensor (Shell-Skript) in eine verteilte Docker-Compose-Umgebung mit Persistenz und Sicherheitsmaßnahmen.
 
 ---
 
-## 🗂️ Projektstruktur
+## Projektstruktur
 
 ```
 .
@@ -225,7 +225,7 @@ Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Ja
 
 ---
 
-## ⚙️ Verwendete Technologien
+## Verwendete Technologien
 
 - Docker & Docker Compose
 - Eclipse Mosquitto (MQTT-Broker)
@@ -234,7 +234,7 @@ Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Ja
 
 ---
 
-## 🧱 Docker-Compose Konfiguration
+## Docker-Compose Konfiguration
 
 ```yaml
 version: '3.8'
@@ -268,7 +268,7 @@ volumes:
 
 ---
 
-## 📝 Dockerfile (Publisher)
+## Dockerfile (Publisher)
 
 ```Dockerfile
 FROM maven:3.8.4-openjdk-17 AS build
@@ -284,7 +284,7 @@ CMD ["java", "-jar", "app.jar"]
 
 ---
 
-## 📡 Sensor Skript
+## Sensor Skript
 
 ```bash
 #!/bin/bash
@@ -297,7 +297,7 @@ done
 
 ---
 
-## ✅ Testplan
+## Testplan
 
 | Test-ID | Testziel                            | Vorgehen                         | Erwartetes Ergebnis               |
 |---------|-------------------------------------|----------------------------------|-----------------------------------|
@@ -309,7 +309,7 @@ done
 
 ---
 
-## 📊 Testprotokoll
+## Testprotokoll
 
 | Test-ID | Ergebnis                           | Status | Bemerkung                        |
 |---------|------------------------------------|--------|----------------------------------|
@@ -321,7 +321,7 @@ done
 
 ---
 
-## 🔐 Sicherheitsmaßnahmen
+## Sicherheitsmaßnahmen
 
 - Offizielle Images verwendet
 - Nur notwendige Ports (1883, 9001) freigegeben
@@ -331,7 +331,7 @@ done
 
 ---
 
-## 🔄 Migrationsvergleich
+## Migrationsvergleich
 
 | Kriterium       | Ohne Container (manuell)   | Mit Docker Compose              |
 |-----------------|----------------------------|---------------------------------|
@@ -342,6 +342,6 @@ done
 
 ---
 
-## 📌 Fazit
+## Fazit
 
 Dieses Projekt zeigt, wie eine klassische MQTT-Anwendung mithilfe von Docker Compose in ein verteiltes, persistentes und sicheres System überführt werden kann. Alle Anforderungen des Sidequests SQ5 A/C wurden erfüllt.
