@@ -18,10 +18,22 @@ services:
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
 
-  publisher:
+  publisher1:
     build:
       context: ./
-    container_name: mqtt-publisher
+    hostname: sensor1
+    depends_on:
+      - mosquitto
+  publisher2:
+    build:
+      context: ./
+    hostname: sensor2
+    depends_on:
+      - mosquitto
+  publisher3:
+    build:
+      context: ./
+    hostname: sensor3
     depends_on:
       - mosquitto
 
