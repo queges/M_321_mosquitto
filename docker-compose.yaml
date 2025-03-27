@@ -1,18 +1,29 @@
 services:
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+
   mosquitto:
     image: eclipse-mosquitto
     container_name: mosquitto
     ports:
-      - "1883:1883"   # MQTT Port
-      - "9001:9001"   # WebSockets (falls aktiviert)
+      - "1883:1883"
+      - "9001:9001"
     volumes:
       - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
-      - ./sensor.sh:/sensor.sh
 
   publisher:
     build:
-      context: ./MavenDemo
+      context: ./
     container_name: mqtt-publisher
     depends_on:
       - mosquitto
+
+volumes:
+  grafana_data:

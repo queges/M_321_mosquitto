@@ -10,7 +10,7 @@ public class App {
         System.out.println("Hello Bledion!");
 
         try {
-          MqttClient client = new MqttClient("tcp://localhost:1883", UUID.randomUUID().toString());
+          MqttClient client = new MqttClient("tcp://mosquitto:1883", UUID.randomUUID().toString());
           double inkrement = 0;
 
           while (true){
