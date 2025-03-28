@@ -342,6 +342,11 @@ done
 
 ---
 
+### 5.2 Dashboard
+![img](imgs/grafanaMigration.png)
+
+---
+
 ## Fazit
 
 Dieses Projekt zeigt, wie eine klassische MQTT-Anwendung mithilfe von Docker Compose in ein verteiltes, persistentes und sicheres System überführt werden kann. Alle Anforderungen des Sidequests SQ5 A/C wurden erfüllt.
