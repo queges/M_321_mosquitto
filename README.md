@@ -343,7 +343,7 @@ done
 ---
 
 ### 5.2 Dashboard
-![img](imgs/grafanaMigration.png)
+![img](imgs/GrafanaMigration.png)
 
 ---
 
