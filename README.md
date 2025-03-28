@@ -198,19 +198,15 @@ Alle **500 Millisekunden** wird ein neuer Wert (basierend auf der Sinusfunktion)
 
 # MQTT-System Migration in Docker Compose
 
-**Autoren:** Armin Vehapi & Glenn Spirig  
-**Datum:** 27.03.2025  
-**Projekt:** Sidequest SQ5 A/C – Migration von MQTT-Komponenten in eine Docker-Umgebung
-
 ---
 
-## Projektziel
+## 1. Projektziel
 
 Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Java) und Sensor (Shell-Skript) in eine verteilte Docker-Compose-Umgebung mit Persistenz und Sicherheitsmaßnahmen.
 
 ---
 
-## Projektstruktur
+## 2. Projektstruktur
 
 ```
 .
@@ -225,7 +221,7 @@ Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Ja
 
 ---
 
-## Verwendete Technologien
+## 3. Verwendete Technologien
 
 - Docker & Docker Compose
 - Eclipse Mosquitto (MQTT-Broker)
@@ -234,7 +230,7 @@ Migration einer bestehenden MQTT-Anwendung mit Mosquitto (Broker), Publisher (Ja
 
 ---
 
-## Docker-Compose Konfiguration
+## 4. Docker-Compose Konfiguration
 
 ```yaml
 version: '3.8'
@@ -268,7 +264,7 @@ volumes:
 
 ---
 
-## Dockerfile (Publisher)
+## 5. Dockerfile (Publisher)
 
 ```Dockerfile
 FROM maven:3.8.4-openjdk-17 AS build
@@ -284,7 +280,7 @@ CMD ["java", "-jar", "app.jar"]
 
 ---
 
-## Sensor Skript
+## 6. Sensor Skript
 
 ```bash
 #!/bin/bash
@@ -297,7 +293,7 @@ done
 
 ---
 
-## Testplan
+## 7. Testplan
 
 | Test-ID | Testziel                            | Vorgehen                         | Erwartetes Ergebnis               |
 |---------|-------------------------------------|----------------------------------|-----------------------------------|
@@ -309,7 +305,7 @@ done
 
 ---
 
-## Testprotokoll
+## 8. Testprotokoll
 
 | Test-ID | Ergebnis                           | Status | Bemerkung                        |
 |---------|------------------------------------|--------|----------------------------------|
@@ -321,7 +317,7 @@ done
 
 ---
 
-## Sicherheitsmaßnahmen
+## 9. Sicherheitsmaßnahmen
 
 - Offizielle Images verwendet
 - Nur notwendige Ports (1883, 9001) freigegeben
@@ -331,7 +327,7 @@ done
 
 ---
 
-## Migrationsvergleich
+## 10. Migrationsvergleich
 
 | Kriterium       | Ohne Container (manuell)   | Mit Docker Compose              |
 |-----------------|----------------------------|---------------------------------|
@@ -342,11 +338,11 @@ done
 
 ---
 
-### 5.2 Dashboard
+### 11. Dashboard
 ![img](imgs/GrafanaMigration.png)
 
 ---
 
-## Fazit
+## 12. Fazit
 
 Dieses Projekt zeigt, wie eine klassische MQTT-Anwendung mithilfe von Docker Compose in ein verteiltes, persistentes und sicheres System überführt werden kann. Alle Anforderungen des Sidequests SQ5 A/C wurden erfüllt.
