@@ -1,41 +1,93 @@
 services:
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - web
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prom_conf/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - monitoring
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitoring
 
   grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: unless-stopped
+    image: grafana/grafana:latest
     ports:
       - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
+    networks:
+      - monitoring
 
-  mosquitto:
+  demo1:
+    image: prom/node-exporter
+    networks:
+      - monitoring
+
+  demo2:
+    image: prom/node-exporter
+    networks:
+      - monitoring
+
+  mosquitto1:
     image: eclipse-mosquitto
-    container_name: mosquitto
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mqtt.rule=Host(`mqtt.example.com`)"
+      - "traefik.http.services.mqtt.loadbalancer.server.port=1883"
     ports:
-      - "1883:1883"
-      - "9001:9001"
-    volumes:
-      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - "1883"
+    networks:
+      - web
+      - monitoring
 
-  publisher1:
-    build:
-      context: ./
-    hostname: sensor1
-    depends_on:
-      - mosquitto
-  publisher2:
-    build:
-      context: ./
-    hostname: sensor2
-    depends_on:
-      - mosquitto
-  publisher3:
-    build:
-      context: ./
-    hostname: sensor3
-    depends_on:
-      - mosquitto
+  mosquitto2:
+    image: eclipse-mosquitto
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mqtt.rule=Host(`mqtt.example.com`)"
+      - "traefik.http.services.mqtt.loadbalancer.server.port=1883"
+    ports:
+      - "1884"
+    networks:
+      - web
+      - monitoring
 
-volumes:
-  grafana_data:
+  publisher:
+    build: ./publisher
+    depends_on:
+      - mosquitto1
+      - mosquitto2
+    environment:
+      - MQTT_BROKER=mqtt.example.com
+    networks:
+      - web
+      - monitoring
+
+networks:
+  web:
+    driver: bridge
+  monitoring:
+    driver: bridge
