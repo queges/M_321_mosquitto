@@ -3,6 +3,7 @@
 - [MQTT-System mit Dummy-Sensoren](#mqtt-system-mit-dummy-sensoren)
 - [MQTT Publisher mit Java und Maven](#mqtt-publisher-mit-java-und-maven)
 - [MQTT-System Migration in Docker Compose](#mqtt-system-migration-in-docker-compose)
+- [Monitoring mit Prometheus, CAdvisor, Grafana und MQTT](#monitoring-mit-prometheus,-cadvisor,-grafana-und-mqtt)
 
 # MQTT-System mit Dummy-Sensoren
 
@@ -346,3 +347,105 @@ done
 ## 12. Fazit
 
 Dieses Projekt zeigt, wie eine klassische MQTT-Anwendung mithilfe von Docker Compose in ein verteiltes, persistentes und sicheres System überführt werden kann. Alle Anforderungen des Sidequests SQ5 A/C wurden erfüllt.
+
+
+# Monitoring mit Prometheus, CAdvisor, Grafana und MQTT
+
+## 📦 Projektbeschreibung
+
+In diesem Projekt wird ein containerisiertes Monitoring-System aufgebaut, das Prometheus, CAdvisor, Node Exporter, Grafana sowie einen MQTT-Broker integriert. Ziel ist es, die Systemressourcen von Containern zu überwachen, Daten aufzubereiten, Alerts auszulösen und diese visuell darzustellen.
+
+---
+
+## 🛠️ Vorgehensweise: Prometheus inkl. Alerts und CAdvisor
+
+### 🔧 Installation & Konfiguration
+
+- **Prometheus** und **Alertmanager** wurden mit Docker betrieben.
+- Die `prometheus.yml`-Datei enthält statische Targets für `cadvisor` und `node-exporter`.
+- Alerts sind in einer eigenen Datei `alert_rules.yml` definiert und per `rule_files` in Prometheus eingebunden.
+- **CAdvisor** wurde als Container gestartet, um Docker-Metriken bereitzustellen.
+
+```bash
+docker run \
+  -d \
+  --name cadvisor \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --publish=8080:8080 \
+  google/cadvisor:latest
+```
+
+---
+
+## 🔄 Zusammenspiel: Prometheus, CAdvisor, Grafana & Alerts
+
+### 📈 Datenfluss
+
+1. **CAdvisor** sammelt Containerdaten.
+2. **Prometheus** scraped Metriken in Intervallen.
+3. **Alertmanager** wird bei definierten Schwellenwerten aktiv.
+4. **Grafana** visualisiert alle Metriken und den Alertstatus.
+
+![img](imgs/Illustration.jpeg)
+
+
+### 🖼️ Visualisierung
+
+Dashboards wurden in Grafana importiert und angepasst. Alerts sind direkt sichtbar und zeigen den Zustand des Systems an. Ein typischer Alert sieht so aus:
+
+```yaml
+- alert: HighCPUUsage
+  expr: rate(container_cpu_usage_seconds_total[1m]) > 0.8
+  for: 1m
+  labels:
+    severity: warning
+  annotations:
+    summary: "CPU usage is high"
+```
+
+---
+
+## ☁️ Cloudfähiges Container-Monitoring
+
+Das gesamte Setup läuft in einer **Docker-Compose Umgebung**. Die Konfiguration ermöglicht einfaches Starten aller Services per:
+
+```bash
+docker-compose up -d
+```
+
+### Dienste:
+
+- Prometheus
+- Alertmanager
+- Grafana
+- Node Exporter
+- CAdvisor
+- MQTT Broker
+- Dummy Sensoren (Shell + Java)
+
+---
+
+## ✅ Funktionierende Prometheus Alerts (Live-Abnahme)
+
+Die Alerts wurden unter Lastbedingungen (z. B. via `stress-ng`) erfolgreich getestet. Die Auslösung und Sichtbarkeit in Grafana wurde live demonstriert. Die Daten der Sensoren wurden über MQTT verarbeitet und zur Analyse bereitgestellt.
+
+---
+
+## 🧪 Testplan & Testprotokoll für Alerting
+
+| Testfall                                      | Vorgehen                                            | Erwartung        | Resultat |
+|----------------------------------------------|-----------------------------------------------------|------------------|----------|
+| CAdvisor erreichbar                           | Zugriff auf `localhost:8080/metrics`               | 200 OK, Daten    | ✅ OK     |
+| Prometheus scrapt Daten                       | UI zeigt CAdvisor & Node Exporter                  | Targets grün     | ✅ OK     |
+| Alert bei CPU-Last                            | `stress-ng` ausführen                               | Alert erscheint  | ✅ OK     |
+| Alertmanager Benachrichtigung sichtbar        | Alert auslösen und via UI prüfen                   | "FIRING"         | ✅ OK     |
+| Grafana zeigt Daten                           | Dashboard öffnen                                    | Graph sichtbar   | ✅ OK     |
+
+---
+
+## 💬 Persönliches Fazit zum Modul 321
+
+> *„Das Modul 321 hat mir gezeigt, wie wichtig gutes Monitoring in modernen IT-Systemen ist. Die Kombination aus Prometheus, CAdvisor und Grafana war nicht nur spannend, sondern auch sehr praxisnah. Besonders gefallen hat mir die Visualisierung von Metriken und die Möglichkeit, Alerts individuell zu definieren. Dieses Wissen werde ich in zukünftigen Projekten sicher anwenden können – inshallah.“*
