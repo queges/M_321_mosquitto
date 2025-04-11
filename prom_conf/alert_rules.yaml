@@ -1,0 +1,11 @@
+groups:
+  - name: node_monitoring
+    rules:
+      - alert: NodeDown
+        expr: up{job="nodes"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node down (instance {{ $labels.instance }})"
+          description: "{{ $labels.instance }} is down for more than 1 minute."

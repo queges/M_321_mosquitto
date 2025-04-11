@@ -19,6 +19,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prom_conf/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+      - ./prom_conf/alert_rules.yaml:/etc/prometheus/alert_rules.yaml
     networks:
       - monitoring
 
@@ -85,6 +86,21 @@ services:
     networks:
       - web
       - monitoring
+
+  alertmanager:
+    container_name: alertmanager
+    image: prom/alertmanager:latest
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./alertmanager:/config"
+      - alertmanager-data:/data
+    command: --config.file=/config/alertmanager.yml --log.level=debug
+    networks:
+      - monitoring
+volumes:
+    alertmanager-data:
 
 networks:
   web:
